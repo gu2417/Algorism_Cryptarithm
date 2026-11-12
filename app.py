@@ -1,4 +1,4 @@
-﻿from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from werkzeug.exceptions import HTTPException
 from Module.routes import routes
 
@@ -9,6 +9,10 @@ def create_app(config=None):
     if config:
         app.config.update(config)
     app.register_blueprint(routes)
+
+    @app.get('/')
+    def index():
+        return render_template('index.html')
 
     @app.errorhandler(Exception)
     def internal_error(error):

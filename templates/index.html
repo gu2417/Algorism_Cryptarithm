@@ -1,0 +1,31 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="복면산을 직접 풀고 백트래킹의 탐색 과정을 살펴보세요.">
+  <title>복면산 탐구실 — Cryptarithm Lab</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/" aria-label="복면산 탐구실 홈"><span class="brand-mark">∑</span><span>복면산 <b>탐구실</b></span></a><span class="top-note">ALGORITHM 13 · B04</span></header>
+<main class="shell">
+  <section class="intro"><div><p class="eyebrow"><span class="dot"></span> INTERACTIVE ALGORITHM LAB</p><h1>숫자 뒤에 숨은<br><em>풀이의 순간.</em></h1><p class="intro-copy">문자에 숫자를 하나씩 대입하고, 가능성이 사라지면 되돌아갑니다.<br>복면산을 통해 백트래킹의 생각을 따라가 보세요.</p></div><div class="intro-mark" aria-hidden="true"><span>?</span><small>EVERY LETTER<br>HAS A NUMBER</small></div></section>
+  <section class="workspace" aria-label="복면산 시뮬레이터">
+    <div class="workspace-heading"><div><p class="eyebrow">01 / SET UP</p><h2>문제 만들기</h2></div><p>두 단어를 더하는 복면산을 입력하세요.</p></div>
+    <form id="solve-form" novalidate><div class="form-row"><label class="expression-field"><span>복면산 수식</span><input id="expression" name="expression" type="text" maxlength="128" value="I + BB = ILL" autocomplete="off" spellcheck="false" aria-describedby="input-error input-help"><small id="input-help">영문자와 +, = 를 사용해 주세요.</small></label><label class="algorithm-field"><span>알고리즘</span><select id="algorithm"><option value="backtracking">백트래킹</option><option value="brute_force">완전탐색</option><option value="compare">두 알고리즘 비교</option></select></label><button class="primary" id="solve-button" type="submit">풀이 시작 <span aria-hidden="true">↗</span></button></div><p id="input-error" class="error" role="alert"></p></form>
+    <div class="examples"><span>예제로 시작</span><button type="button" data-example="I + BB = ILL">I + BB = ILL <span>↗</span></button><button type="button" data-example="SEND + MORE = MONEY">SEND + MORE = MONEY <span>↗</span></button></div>
+  </section>
+  <section class="lab" aria-label="탐색 시각화">
+    <div class="lab-main"><div class="section-title"><div><p class="eyebrow">02 / EXPLORE</p><h2>풀이 들여다보기</h2></div><span class="live-label"><span class="dot"></span> <span id="mode-label">실행 대기</span></span></div>
+      <div class="calculation"><div class="calc-meta"><span>현재 계산</span><span id="column-label">자리 선택 전</span></div><div id="carry" class="carry">자리올림 <strong>—</strong> → <strong>—</strong></div><div id="equation" class="equation" aria-label="복면산 계산식"></div><div id="assignment" class="assignment"><span class="muted">아직 배정된 숫자가 없습니다.</span></div></div>
+      <div class="playback"><div class="step-count"><span>탐색 단계</span><strong id="step-number">— / —</strong></div><div class="controls"><button id="restart" type="button" title="처음부터" aria-label="처음부터" disabled>↤</button><button id="prev" type="button" title="이전 단계" aria-label="이전 단계" disabled>←</button><button id="play" class="play" type="button" disabled>▶ <span>재생</span></button><button id="next" type="button" title="다음 단계" aria-label="다음 단계" disabled>→</button></div><label class="speed">재생 속도 <select id="speed"><option value="1000">0.5×</option><option value="500" selected>1×</option><option value="250">2×</option><option value="100">5×</option></select></label></div><p id="trace-warning" class="notice" role="status"></p>
+    </div>
+    <aside class="lab-side"><div><p class="eyebrow">LIVE TRACE</p><h3>지금 무슨 일이?</h3><p id="event-description" class="event-description" aria-live="polite">문제를 실행하면 탐색 과정이 이곳에 나타납니다.</p><p id="event-detail" class="event-detail">하나의 단계씩 살펴보거나 자동으로 재생해 보세요.</p></div><div class="trace-block"><div class="trace-heading"><span>탐색 기록</span><span>현재 단계 주변</span></div><ol id="trace-list" class="trace-list"><li class="trace-empty">아직 기록이 없습니다.</li></ol></div><div class="legend"><span><i class="legend-dot active"></i> 검사 중</span><span><i class="legend-dot success"></i> 정답</span><span><i class="legend-dot failure"></i> 가지치기</span></div></aside>
+  </section>
+  <section class="results" aria-label="풀이 결과"><div class="section-title"><div><p class="eyebrow">03 / RESULTS</p><h2>탐색 결과</h2></div><p id="result-caption">문제를 실행하면 결과가 표시됩니다.</p></div><div id="results-content" class="results-empty"><span>✳</span><p>아직 실행된 문제가 없습니다.</p><small>위에서 예제를 고르거나 직접 수식을 입력해 보세요.</small></div></section>
+  <footer><span>복면산 탐구실 <b>∑</b></span><span>ALGORITHM 13 · B04 CRYPTARITHM</span><span>MADE FOR CURIOUS MINDS ↗</span></footer>
+</main>
+</body>
+</html>
