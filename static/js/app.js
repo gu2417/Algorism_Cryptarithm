@@ -97,11 +97,22 @@
     if (new Set((match[1] + match[2] + match[3]).toUpperCase()).size > 10) return '서로 다른 문자는 최대 10개까지 사용할 수 있습니다.';
     return '';
   }
-  document.querySelectorAll('[data-example]').forEach(button => button.addEventListener('click', () => { input.value = button.dataset.example; $('input-error').textContent = ''; input.removeAttribute('aria-invalid'); input.focus(); }));
+  const examples = [...document.querySelectorAll('[data-example]')];
+  function setInputLocked(locked) {
+    input.disabled = locked;
+    algorithm.disabled = locked;
+    examples.forEach(button => { button.disabled = locked; });
+  }
+  function invalidateResults() {
+    if (!busy) resetPlayback();
+  }
+  input.addEventListener('input', invalidateResults);
+  algorithm.addEventListener('change', invalidateResults);
+  examples.forEach(button => button.addEventListener('click', () => { input.value = button.dataset.example; invalidateResults(); $('input-error').textContent = ''; input.removeAttribute('aria-invalid'); input.focus(); }));
   form.addEventListener('submit', async event => {
     event.preventDefault(); if (busy) return; const message = validation(input.value); $('input-error').textContent = message;
     if (message) { input.setAttribute('aria-invalid', 'true'); input.focus(); return; }
-    busy = true; input.removeAttribute('aria-invalid'); resetPlayback(); $('solve-button').disabled = true; $('solve-button').textContent = '계산 중…'; $('mode-label').textContent = '계산 중';
+    busy = true; input.removeAttribute('aria-invalid'); resetPlayback(); setInputLocked(true); $('solve-button').disabled = true; $('solve-button').textContent = '계산 중…'; $('mode-label').textContent = '계산 중';
     try {
       const response = await fetch('/api/solve', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({expression: input.value, algorithm: algorithm.value})});
       const data = await response.json(); if (!response.ok) throw new Error(data.error?.message || '요청을 처리하지 못했습니다.');
@@ -112,7 +123,7 @@
       else if (!trace.length) $('trace-warning').textContent = '재생할 탐색 기록이 없습니다.';
       render(); showResults(data);
     } catch (error) { $('input-error').textContent = error.message || '서버에 연결할 수 없습니다.'; $('mode-label').textContent = '실행 오류'; }
-    finally { busy = false; $('solve-button').disabled = false; $('solve-button').innerHTML = '풀이 시작 <span aria-hidden="true">↗</span>'; }
+    finally { busy = false; setInputLocked(false); $('solve-button').disabled = false; $('solve-button').innerHTML = '풀이 시작 <span aria-hidden="true">↗</span>'; }
   });
   $('prev').addEventListener('click', () => { pause(); if (index > 0) index--; render(); });
   $('next').addEventListener('click', () => { pause(); if (index < trace.length - 1) index++; render(); });
