@@ -20,3 +20,6 @@ footer { color: #505c4d; }
 .status.limited { color: #874427; }
 .equation-placeholder { color: #505c4d; }
 .trace-item:hover, .trace-list .selected .trace-item { color: #344b35; }
+.trace-choice:not([hidden]) { display: flex; align-items: center; gap: 12px; margin-top: 18px; color: #505c4d; font-size: 12px; }
+.trace-choice select { width: auto; height: 36px; }
+.trace-context:not([hidden]) { margin: 12px 0 0; color: #505c4d; font-size: 12px; line-height: 1.6; }

@@ -2,8 +2,8 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const form = $('solve-form'), input = $('expression'), algorithm = $('algorithm');
-  let trace = [], index = 0, timer = null, words = [], busy = false;
-  const names = {start:'탐색을 시작합니다', candidate:'숫자 후보를 선택합니다', assign:'문자에 숫자를 배정합니다', column_calculation:'현재 자리를 계산합니다', carry_check:'자리올림을 확인합니다', conflict:'제약 조건이 충돌했습니다', prune:'이 후보를 가지치기합니다', backtrack:'이전 상태로 되돌아갑니다', solution:'유효한 정답을 찾았습니다', finish:'탐색이 끝났습니다'};
+  let trace = [], index = 0, timer = null, words = [], busy = false, runs = [], activeAlgorithm = '';
+  const names = {start:'탐색을 시작합니다', candidate:'숫자 후보를 선택합니다', assign:'문자에 숫자를 배정합니다', complete_check:'완성된 수식을 검사합니다', column_calculation:'현재 자리를 계산합니다', carry_check:'자리올림을 확인합니다', conflict:'제약 조건이 충돌했습니다', prune:'이 후보를 가지치기합니다', backtrack:'이전 상태로 되돌아갑니다', solution:'유효한 정답을 찾았습니다', finish:'탐색이 끝났습니다'};
   const node = (tag, className, value) => { const element = document.createElement(tag); if (className) element.className = className; if (value !== undefined) element.textContent = value; return element; };
   function pause() { if (timer !== null) clearInterval(timer); timer = null; $('play').innerHTML = '▶ <span>재생</span>'; }
   function renderEquation(assignment = {}, column = null) {
@@ -32,7 +32,7 @@
     if (!trace.length) { renderEquation(); updateButtons(); return; }
     const event = trace[index];
     renderEquation(event.assignment, event.column);
-    $('column-label').textContent = event.column === null ? '자리 선택 전' : `${event.column + 1}번째 자리 · 오른쪽부터`;
+    $('column-label').textContent = event.column === null ? (activeAlgorithm === 'brute_force' ? '전체 식 검사' : '자리 선택 전') : `${event.column + 1}번째 자리 · 오른쪽부터`;
     $('carry').replaceChildren(document.createTextNode('자리올림 '), node('strong', '', event.carry_in === null ? '—' : String(event.carry_in)), document.createTextNode(' → '), node('strong', '', event.carry_out === null ? '—' : String(event.carry_out)));
     const assignment = $('assignment'); assignment.replaceChildren();
     const entries = Object.entries(event.assignment);
@@ -40,7 +40,7 @@
     entries.forEach(([letter, digit]) => assignment.append(node('span', 'assignment-chip', `${letter}  =  ${digit}`)));
     $('step-number').textContent = `${(index + 1).toLocaleString()} / ${trace.length.toLocaleString()}`;
     $('event-description').textContent = names[event.type] || event.type;
-    $('event-detail').textContent = event.reason || event.check || (event.undo.length ? `${event.undo.join(', ')} 배정을 해제했습니다.` : '현재 상태를 확인해 보세요.');
+    $('event-detail').textContent = [event.check, event.reason].filter(Boolean).join(' · ') || (event.undo.length ? `${event.undo.join(', ')} 배정을 해제했습니다.` : '현재 상태를 확인해 보세요.');
     const list = $('trace-list'); list.replaceChildren();
     const start = Math.max(0, index - 2), end = Math.min(trace.length, index + 3);
     for (let i = start; i < end; i++) {
@@ -52,7 +52,7 @@
     updateButtons();
   }
   function resetPlayback() {
-    pause(); trace = []; index = 0; words = [];
+    pause(); trace = []; index = 0; words = []; runs = []; activeAlgorithm = ''; $('trace-choice').hidden = true; $('trace-context').hidden = true;
     $('step-number').textContent = '— / —'; $('column-label').textContent = '자리 선택 전';
     $('carry').innerHTML = '자리올림 <strong>—</strong> → <strong>—</strong>';
     $('assignment').replaceChildren(node('span', 'muted', '아직 배정된 숫자가 없습니다.'));
@@ -65,6 +65,26 @@
     area.replaceChildren(node('span', '', '✳'), node('p', '', '아직 실행된 문제가 없습니다.'), node('small', '', '위에서 예제를 고르거나 직접 수식을 입력해 보세요.'));
     render();
   }
+  function selectTrace(name) {
+    pause(); index = 0; activeAlgorithm = name;
+    const run = runs.find(item => item.algorithm === name);
+    trace = run?.trace || [];
+    const title = name === 'brute_force' ? '완전탐색' : '백트래킹';
+    $('trace-context').hidden = false;
+    $('trace-context').textContent = name === 'brute_force' ? '완전탐색은 숫자 배정을 완성한 뒤 전체 수식을 검사합니다.' : '백트래킹은 오른쪽 자리부터 계산하며 맞지 않는 후보를 제외합니다.';
+    $('mode-label').textContent = `${title} · ${trace.length ? '탐색 기록 준비' : '기록 없음'}`;
+    $('trace-warning').textContent = run?.trace_truncated ? '기록이 제한되어 탐색의 앞부분만 재생합니다. 최종 결과는 아래에서 확인하세요.' : (!trace.length ? '재생할 탐색 기록이 없습니다.' : '');
+    if (!trace.length) {
+      $('step-number').textContent = '— / —'; $('column-label').textContent = '자리 선택 전';
+      $('carry').innerHTML = '자리올림 <strong>—</strong> → <strong>—</strong>';
+      $('assignment').replaceChildren(node('span', 'muted', '아직 배정된 숫자가 없습니다.'));
+      $('event-description').textContent = '재생할 탐색 기록이 없습니다.';
+      $('event-detail').textContent = '';
+      $('trace-list').replaceChildren(node('li', 'trace-empty', '기록이 없습니다.'));
+    }
+    render();
+  }
+  $('trace-algorithm').addEventListener('change', event => selectTrace(event.target.value));
   function showResults(data) {
     const area = $('results-content'); area.className = 'result-grid'; area.replaceChildren();
     $('result-caption').textContent = `입력 수식  ${data.original_expression}`;
@@ -87,7 +107,7 @@
       [['배정 시도', run.statistics.assignment_attempts.toLocaleString()], ['완성 배정 검사', run.statistics.complete_assignments_checked.toLocaleString()], ['가지치기', run.statistics.prunes.toLocaleString()], ['실행 시간', `${run.statistics.elapsed_ms.toFixed(1)} ms`]].forEach(([key, val]) => { const item = node('div'); item.append(node('span', '', key), node('strong', '', val)); stats.append(item); });
       panel.append(stats); area.append(panel);
     }
-    if (data.runs.length > 1) area.append(node('p', 'compare-note', '배정 시도는 미사용 숫자를 문자에 배정하려 한 횟수입니다. 백트래킹 실행 시간에는 기록 생성 비용이 포함됩니다.'));
+    if (data.runs.length > 1) area.append(node('p', 'compare-note', '배정 시도는 미사용 숫자를 문자에 배정하려 한 횟수입니다. 두 알고리즘의 실행 시간에는 기록 생성 비용이 포함됩니다.'));
   }
   function validation(value) {
     if (!value.trim()) return '수식을 입력해 주세요.';
@@ -116,12 +136,10 @@
     try {
       const response = await fetch('/api/solve', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({expression: input.value, algorithm: algorithm.value})});
       const data = await response.json(); if (!response.ok) throw new Error(data.error?.message || '요청을 처리하지 못했습니다.');
-      words = data.normalized_expression.match(/[A-Z]+/g) || []; const run = data.runs.find(item => item.algorithm === 'backtracking'); trace = run?.trace || []; index = 0;
-      $('mode-label').textContent = trace.length ? '탐색 기록 준비' : '기록 없음';
-      if (!run) $('trace-warning').textContent = '완전탐색은 단계별 기록을 제공하지 않습니다. 백트래킹 또는 비교를 선택해 주세요.';
-      else if (run.trace_truncated) $('trace-warning').textContent = '기록이 제한되어 탐색의 앞부분만 재생합니다. 최종 결과는 아래에서 확인하세요.';
-      else if (!trace.length) $('trace-warning').textContent = '재생할 탐색 기록이 없습니다.';
-      render(); showResults(data);
+      words = data.normalized_expression.match(/[A-Z]+/g) || []; runs = data.runs;
+      const selected = runs.some(item => item.algorithm === 'backtracking') ? 'backtracking' : 'brute_force';
+      $('trace-choice').hidden = runs.length < 2; $('trace-algorithm').value = selected;
+      selectTrace(selected); showResults(data);
     } catch (error) { $('input-error').textContent = error.message || '서버에 연결할 수 없습니다.'; $('mode-label').textContent = '실행 오류'; }
     finally { busy = false; setInputLocked(false); $('solve-button').disabled = false; $('solve-button').innerHTML = '풀이 시작 <span aria-hidden="true">↗</span>'; }
   });
