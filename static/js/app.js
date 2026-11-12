@@ -1,8 +1,8 @@
-﻿(() => {
+(() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const form = $('solve-form'), input = $('expression'), algorithm = $('algorithm');
-  let trace = [], index = 0, timer = null, words = [], lastResult = null;
+  let trace = [], index = 0, timer = null, words = [], busy = false;
   const names = {start:'탐색을 시작합니다', candidate:'숫자 후보를 선택합니다', assign:'문자에 숫자를 배정합니다', column_calculation:'현재 자리를 계산합니다', carry_check:'자리올림을 확인합니다', conflict:'제약 조건이 충돌했습니다', prune:'이 후보를 가지치기합니다', backtrack:'이전 상태로 되돌아갑니다', solution:'유효한 정답을 찾았습니다', finish:'탐색이 끝났습니다'};
   const node = (tag, className, value) => { const element = document.createElement(tag); if (className) element.className = className; if (value !== undefined) element.textContent = value; return element; };
   function pause() { if (timer !== null) clearInterval(timer); timer = null; $('play').innerHTML = '▶ <span>재생</span>'; }
@@ -52,7 +52,7 @@
     updateButtons();
   }
   function resetPlayback() {
-    pause(); trace = []; index = 0; words = []; lastResult = null;
+    pause(); trace = []; index = 0; words = [];
     $('step-number').textContent = '— / —'; $('column-label').textContent = '자리 선택 전';
     $('carry').innerHTML = '자리올림 <strong>—</strong> → <strong>—</strong>';
     $('assignment').replaceChildren(node('span', 'muted', '아직 배정된 숫자가 없습니다.'));
@@ -99,20 +99,20 @@
   }
   document.querySelectorAll('[data-example]').forEach(button => button.addEventListener('click', () => { input.value = button.dataset.example; $('input-error').textContent = ''; input.removeAttribute('aria-invalid'); input.focus(); }));
   form.addEventListener('submit', async event => {
-    event.preventDefault(); const message = validation(input.value); $('input-error').textContent = message;
+    event.preventDefault(); if (busy) return; const message = validation(input.value); $('input-error').textContent = message;
     if (message) { input.setAttribute('aria-invalid', 'true'); input.focus(); return; }
-    input.removeAttribute('aria-invalid'); resetPlayback(); $('solve-button').disabled = true; $('solve-button').textContent = '계산 중…'; $('mode-label').textContent = '계산 중';
+    busy = true; input.removeAttribute('aria-invalid'); resetPlayback(); $('solve-button').disabled = true; $('solve-button').textContent = '계산 중…'; $('mode-label').textContent = '계산 중';
     try {
       const response = await fetch('/api/solve', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({expression: input.value, algorithm: algorithm.value})});
       const data = await response.json(); if (!response.ok) throw new Error(data.error?.message || '요청을 처리하지 못했습니다.');
-      lastResult = data; words = data.normalized_expression.match(/[A-Z]+/g) || []; const run = data.runs.find(item => item.algorithm === 'backtracking'); trace = run?.trace || []; index = 0;
+      words = data.normalized_expression.match(/[A-Z]+/g) || []; const run = data.runs.find(item => item.algorithm === 'backtracking'); trace = run?.trace || []; index = 0;
       $('mode-label').textContent = trace.length ? '탐색 기록 준비' : '기록 없음';
       if (!run) $('trace-warning').textContent = '완전탐색은 단계별 기록을 제공하지 않습니다. 백트래킹 또는 비교를 선택해 주세요.';
       else if (run.trace_truncated) $('trace-warning').textContent = '기록이 제한되어 탐색의 앞부분만 재생합니다. 최종 결과는 아래에서 확인하세요.';
       else if (!trace.length) $('trace-warning').textContent = '재생할 탐색 기록이 없습니다.';
       render(); showResults(data);
     } catch (error) { $('input-error').textContent = error.message || '서버에 연결할 수 없습니다.'; $('mode-label').textContent = '실행 오류'; }
-    finally { $('solve-button').disabled = false; $('solve-button').innerHTML = '풀이 시작 <span aria-hidden="true">↗</span>'; }
+    finally { busy = false; $('solve-button').disabled = false; $('solve-button').innerHTML = '풀이 시작 <span aria-hidden="true">↗</span>'; }
   });
   $('prev').addEventListener('click', () => { pause(); if (index > 0) index--; render(); });
   $('next').addEventListener('click', () => { pause(); if (index < trace.length - 1) index++; render(); });
