@@ -1,10 +1,10 @@
-﻿from collections.abc import Callable
+from collections.abc import Callable
 
 from Core.constraints import is_solution
 from Core.model import Problem
 
 
-def solve(problem: Problem, emit: Callable[[dict], None] | None = None) -> list[dict[str, int]]:
+def solve(problem: Problem, emit: Callable[[dict], None] | None = None, control=None) -> list[dict[str, int]]:
     assignment: dict[str, int] = {}
     used: set[int] = set()
     solutions: list[dict[str, int]] = []
@@ -23,11 +23,19 @@ def solve(problem: Problem, emit: Callable[[dict], None] | None = None) -> list[
         return word[-column - 1] if column < len(word) else None
 
     def visit(column, carry):
+        if control:
+            control.check()
         if column == width:
+            if control and carry == 0:
+                control.complete_assignments_checked += 1
             if carry == 0 and is_solution(problem, assignment):
                 solutions.append(assignment.copy())
                 event('solution', column, is_solution_event=True)
+                if control:
+                    control.found(assignment)
             elif carry:
+                if control:
+                    control.prunes += 1
                 event('conflict', column, reason='마지막 자리올림이 남았습니다.')
                 event('prune', column, reason='마지막 자리올림이 남았습니다.')
             return
@@ -40,9 +48,15 @@ def solve(problem: Problem, emit: Callable[[dict], None] | None = None) -> list[
             if index < len(pending):
                 letter = pending[index]
                 for digit in range(10):
+                    if control:
+                        control.check()
+                        if digit not in used:
+                            control.assignment_attempts += 1
                     event('candidate', column, column, carry, check=f'{letter}={digit}')
                     if digit in used or (digit == 0 and letter in problem.leading):
                         reason = '이미 사용한 숫자입니다.' if digit in used else '여러 자리 수의 첫 자리는 0이 될 수 없습니다.'
+                        if control and digit not in used:
+                            control.prunes += 1
                         event('conflict', column, column, carry, reason=reason)
                         event('prune', column, column, carry, reason=reason)
                         continue
@@ -65,9 +79,15 @@ def solve(problem: Problem, emit: Callable[[dict], None] | None = None) -> list[
                 valid = assignment[result] == digit
                 newly_assigned = False
             else:
+                if control:
+                    control.check()
+                    if digit not in used:
+                        control.assignment_attempts += 1
                 valid = digit not in used and not (digit == 0 and result in problem.leading)
                 newly_assigned = valid
             if not valid:
+                if control:
+                    control.prunes += 1
                 reason = '결과 자리의 숫자 또는 배정 제약이 일치하지 않습니다.'
                 event('conflict', column, column, carry, outgoing, reason=reason)
                 event('prune', column, column, carry, outgoing, reason=reason)
