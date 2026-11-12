@@ -79,3 +79,49 @@ test('server validation errors appear and timeout is not called no-solution',asy
   assert.match(ui.el('results-content').textContent,/시간 제한/);assert.doesNotMatch(ui.el('results-content').textContent,/모든 허용 후보/);
   ui.w.fetch=async()=>({ok:false,json:async()=>({error:{message:'수식 오류'}})});await ui.submit();assert.equal(ui.el('input-error').textContent,'수식 오류');ui.dom.window.close();
 });
+
+test('pending solve locks inputs and restores them after success',async()=>{
+  const ui=setup(data);let resolve;
+  ui.w.fetch=()=>new Promise(r=>{resolve=r;});
+  ui.el('solve-form').dispatchEvent(new ui.w.Event('submit',{cancelable:true}));
+  const example=ui.w.document.querySelector('[data-example]');
+  assert.equal(ui.el('expression').disabled,true);
+  assert.equal(ui.el('algorithm').disabled,true);
+  assert.equal(example.disabled,true);
+  const original=ui.el('expression').value;example.click();assert.equal(ui.el('expression').value,original);
+  resolve({ok:true,json:async()=>data});await new Promise(setImmediate);
+  assert.equal(ui.el('expression').disabled,false);assert.equal(ui.el('algorithm').disabled,false);assert.equal(example.disabled,false);
+  ui.dom.window.close();
+});
+test('editing input, selecting example or changing algorithm clears stale result',async()=>{
+  for(const change of ['input','example','algorithm']){
+    const ui=setup(data);await ui.submit();assert.match(ui.el('results-content').textContent,/정답/);
+    if(change==='input'){ui.el('expression').value='B + B = C';ui.el('expression').dispatchEvent(new ui.w.Event('input'));}
+    if(change==='example')ui.w.document.querySelectorAll('[data-example]')[1].click();
+    if(change==='algorithm'){ui.el('algorithm').value='compare';ui.el('algorithm').dispatchEvent(new ui.w.Event('change'));}
+    assert.match(ui.el('results-content').textContent,/아직 실행된 문제가 없습니다/);
+    assert.equal(ui.el('play').disabled,true);ui.dom.window.close();
+  }
+});
+test('controls are restored after a failed request',async()=>{
+  const ui=setup(data);ui.w.fetch=async()=>{throw new Error('offline');};await ui.submit();
+  assert.equal(ui.el('expression').disabled,false);assert.equal(ui.el('algorithm').disabled,false);
+  assert.ok([...ui.w.document.querySelectorAll('[data-example]')].every(button=>!button.disabled));ui.dom.window.close();
+});
+
+test('trace text and selected step maintain readable contrast',async()=>{
+  const ui=setup(data);
+  const style=ui.w.document.createElement('style');style.textContent=fs.readFileSync('static/css/style.css','utf8');ui.w.document.head.append(style);
+  await ui.submit();
+  const rgb=value=>{const values=value.match(/[\d.]+/g);assert.ok(values,`Invalid color: ${value}`);return values.slice(0,3).map(Number);};
+  const luminance=color=>{const channels=color.map(n=>{const c=n/255;return c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4;});return .2126*channels[0]+.7152*channels[1]+.0722*channels[2];};
+  const ratio=(a,b)=>{a=luminance(a);b=luminance(b);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);};
+  const contrast=(text,background)=>ratio(rgb(ui.w.getComputedStyle(text).color),rgb(ui.w.getComputedStyle(background).backgroundColor));
+  const side=ui.w.document.querySelector('.lab-side');
+  for(const selector of ['.trace-heading','.trace-empty','.event-detail','.legend']){
+    const element=ui.w.document.querySelector(selector);if(element)assert.ok(contrast(element,side)>=4.5,selector);
+  }
+  const selected=ui.w.document.querySelector('.trace-list .selected .trace-item');
+  assert.ok(contrast(selected.querySelector('.trace-index'),selected)>=4.5,'selected trace index');
+  ui.dom.window.close();
+});

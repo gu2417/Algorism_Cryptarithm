@@ -7,3 +7,16 @@
 #result-caption { overflow-wrap: anywhere; min-width: 0; }
 .lab-main { min-width: 0; }
 @media (max-width: 800px) { .lab { grid-template-columns: minmax(0, 1fr); } }
+
+/* 정보성 보조 문구는 각 배경에서 충분한 명도 대비를 유지한다. */
+:root { --muted: #505c4d; }
+.top-note, .eyebrow, .intro-copy, label small, .examples > span,
+.calc-meta, .carry, .operator, .digit small, .muted,
+.step-count span, .speed, .event-detail, .trace-heading,
+.trace-item, .trace-index, .trace-empty, .legend,
+.results-empty, .solution-select, .solution-value span, .stats span,
+footer { color: #505c4d; }
+.carry strong, .notice, .result-note, .compare-note { color: #874427; }
+.status.limited { color: #874427; }
+.equation-placeholder { color: #505c4d; }
+.trace-item:hover, .trace-list .selected .trace-item { color: #344b35; }
