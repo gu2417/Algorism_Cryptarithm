@@ -25,19 +25,21 @@
 
 ## 제한과 측정
 
-초기 제안값: 알고리즘별 독립적인 단조 시계 제한 5초, 반환 해 최대 100개, 백트래킹 기록 최대 10,000개 이벤트. 각 후보와 재귀 진입 지점에서 기한을 협조적으로 확인한다. 기록 상한에 도달하면 기록만 중단하고 계산은 계속한다. 시간 또는 해 상한에 도달하면 해당 탐색을 중지한다. 제한값은 설정으로 조정하며 운영 환경에 따라 검증한다. 동기 요청이므로 제한은 강제 프로세스 중단을 보장하지 않는다. 고비용 입력은 비교 시 두 실행을 각각 제한한다.
+기본 설정: 알고리즘별 독립적인 단조 시계 제한 5초, 반환 해 최대 100개, 알고리즘별 기록 최대 10,000개 이벤트. 각 후보와 재귀 진입 지점에서 기한을 협조적으로 확인한다. 기록 상한에 도달하면 기록만 중단하고 계산은 계속한다. 시간 또는 해 상한에 도달하면 해당 탐색을 중지한다. 제한값은 설정으로 조정하며 운영 환경에 따라 검증한다. 동기 요청이므로 제한은 강제 프로세스 중단을 보장하지 않는다. 비교 시 두 실행의 시간과 기록을 각각 제한한다.
 
-`status`는 `complete`, `time_limit`, `solution_limit`이다. `complete`만 정확한 전체 해 개수를 의미한다. 제한 시 반환된 해 개수는 하한이며 0이어도 해 없음으로 단정하지 않는다. `trace_truncated`는 기록 제한만 뜻하며 계산 완료 여부와 독립적이다. 재생은 저장된 접두 구간만 가능하다. 카운트는 각 알고리즘에서 **문자에 미사용 숫자를 배정하려 시도한 횟수**로 정의하며, 검증 횟수와 가지치기 횟수는 별도다. 완전탐색의 가지치기에는 선행 0 거부를 포함하고 자리 검사 가지치기는 없다. 실행 시간은 해당 알고리즘 호출 시작부터 종료까지 단조 시계로 측정하며 HTTP 전송과 브라우저 재생은 제외한다. 기록 생성 오버헤드는 백트래킹 시간에 포함되므로 비교 화면에 표시한다.
+`status`는 `complete`, `time_limit`, `solution_limit`이다. `complete`만 정확한 전체 해 개수를 의미한다. 제한 시 반환된 해 개수는 하한이며 0이어도 해 없음으로 단정하지 않는다. `trace_truncated`는 기록 제한만 뜻하며 계산 완료 여부와 독립적이다. 재생은 저장된 접두 구간만 가능하다. 카운트는 각 알고리즘에서 **문자에 미사용 숫자를 배정하려 시도한 횟수**로 정의하며, 검증 횟수와 가지치기 횟수는 별도다. 완전탐색의 가지치기에는 선행 0 거부를 포함하고 자리 검사 가지치기는 없다. 실행 시간은 해당 알고리즘 호출 시작부터 종료까지 단조 시계로 측정하며 HTTP 전송과 브라우저 재생은 제외한다. 두 알고리즘의 실행 시간에 기록 생성 비용이 포함된다.
 
 ## Flask API 제안
 
-`POST /api/solve` JSON 요청: `{"expression":"SEND + MORE = MONEY","algorithm":"backtracking"}`. `algorithm`은 `backtracking`, `brute_force`, `compare` 중 하나다. compare는 동일 문제로 두 알고리즘을 독립 실행하고 백트래킹 기록만 반환한다. 서버가 상한을 결정하며 요청마다 새 실행이다.
+`POST /api/solve` JSON 요청: `{"expression":"SEND + MORE = MONEY","algorithm":"backtracking"}`. `algorithm`은 `backtracking`, `brute_force`, `compare` 중 하나다. compare는 동일 문제로 두 알고리즘을 독립 실행하고 각각의 기록을 반환한다. 서버가 상한을 결정하며 요청마다 새 실행이다.
 
-성공 `200`: `original_expression`, `normalized_expression`, `runs` 배열. 각 run은 `algorithm`, `status`, `solutions`(문자-숫자 `mapping`, `numeric_expression`), `solutions_found`(반환된 해 개수), `statistics`(아래), `trace` 및 `trace_truncated`를 포함한다. `statistics`는 `assignment_attempts`, `complete_assignments_checked`, `prunes`, `elapsed_ms`다. complete일 때 `solutions_found`가 총 해 수이고 그 외에는 하한이다. 완전탐색의 `trace`는 빈 배열이다. 유효하지 않은 요청은 `400`과 `{"error":{"code":"INVALID_FORMAT","message":"..."}}`; 유형에 따라 `EMPTY_INPUT`, `TOO_LONG`, `INVALID_FORMAT`, `TOO_MANY_LETTERS`, `INVALID_ALGORITHM`을 사용한다. 예상치 못한 오류는 `500`과 일반 오류 메시지를 반환하며 내부 상세는 서버 로그에만 둔다. 시간 및 해 제한은 정상적인 부분 결과로 `200`을 사용한다.
+성공 `200`: `original_expression`, `normalized_expression`, `runs` 배열. 각 run은 `algorithm`, `status`, `solutions`(문자-숫자 `mapping`, `numeric_expression`), `solutions_found`(반환된 해 개수), `statistics`(아래), `trace` 및 `trace_truncated`를 포함한다. `statistics`는 `assignment_attempts`, `complete_assignments_checked`, `prunes`, `elapsed_ms`다. complete일 때 `solutions_found`가 총 해 수이고 그 외에는 하한이다. 두 알고리즘 모두 실제 탐색 기록을 반환한다. 유효하지 않은 요청은 `400`과 `{"error":{"code":"INVALID_FORMAT","message":"..."}}`; 유형에 따라 `EMPTY_INPUT`, `TOO_LONG`, `INVALID_FORMAT`, `TOO_MANY_LETTERS`, `INVALID_ALGORITHM`을 사용한다. 예상치 못한 오류는 `500`과 일반 오류 메시지를 반환하며 내부 상세는 서버 로그에만 둔다. 시간 및 해 제한은 정상적인 부분 결과로 `200`을 사용한다.
 
 ## 기록과 재생 계약
 
 백트래킹 이벤트는 `seq`(0부터 연속), `type`, `depth`, `assignment`(이벤트 직후 전체 배정 스냅샷), `column`(일의 자리 0, 해당 없으면 null), `carry_in`, `carry_out`, `check`(결과 또는 null), `reason`(충돌·가지치기 이유 또는 null), `undo`(복귀 시 해제한 문자 목록), `is_solution`을 가진다. 적용되지 않는 필드는 null 또는 빈 배열이다. 이벤트 종류는 `start`, `candidate`, `assign`, `column_calculation`, `carry_check`, `conflict`, `prune`, `backtrack`, `solution`, `finish`다. 깊이는 현재 재귀 호출 깊이이며 각 이벤트는 그 순간의 상태를 나타낸다. 제한으로 `finish`가 기록에 없을 수 있으므로 종료 상태는 항상 run의 `status`로 판단한다.
+
+완전탐색은 같은 필드 형식으로 후보 선택·배정·선행 0 제외·복귀·정답과 종료를 기록한다. `complete_check` 이벤트는 완성된 숫자식과 검증 결과를 담으며 `column`, `carry_in`, `carry_out`은 항상 null이다. 개별 자릿수 검사나 자리올림 가지치기를 수행하지 않는다. 비교 모드에서는 재생할 알고리즘을 전환할 수 있다.
 
 스냅샷으로 임의 단계와 이전 단계 복원이 가능하고 프론트엔드는 이벤트 종류와 필드에 따라 강조·설명을 그린다. 잘린 기록의 마지막을 탐색 완료로 표현하지 않는다. 요청 단위 메모리 상한을 먼저 적용하고, 추후 필요하면 페이지 전달을 검토한다. 페이지 전달은 서버 보관 기간과 정리 정책이 추가로 필요하므로 초기 설계에는 포함하지 않는다.
 

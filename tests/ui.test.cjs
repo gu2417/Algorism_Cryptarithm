@@ -1,4 +1,4 @@
-﻿const {test} = require('node:test');
+const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -57,7 +57,7 @@ test('partial results and trace truncation have separate notices',async()=>{
 });
 test('complete no-solution and brute-force response remain usable',async()=>{
   const ui=setup(response('A + B = AA','brute_force'));await ui.submit();assert.match(ui.el('results-content').textContent,/정답 0개/);
-  assert.equal(ui.el('play').disabled,true);assert.match(ui.el('trace-warning').textContent,/완전탐색/);ui.dom.window.close();
+  assert.equal(ui.el('play').disabled,false);assert.match(ui.el('mode-label').textContent,/완전탐색/);ui.dom.window.close();
 });
 test('compare shows both algorithms and their independent states',async()=>{
   const ui=setup(response('A + A = A','compare'));await ui.submit();assert.equal(ui.w.document.querySelectorAll('.result-panel').length,2);ui.dom.window.close();
@@ -123,5 +123,21 @@ test('trace text and selected step maintain readable contrast',async()=>{
   }
   const selected=ui.w.document.querySelector('.trace-list .selected .trace-item');
   assert.ok(contrast(selected.querySelector('.trace-index'),selected)>=4.5,'selected trace index');
+  ui.dom.window.close();
+});
+
+
+test('compare mode selects and replays both genuine traces independently',async()=>{
+  const ui=setup(response('A + A = A','compare'));await ui.submit();
+  const selector=ui.el('trace-algorithm');assert.ok(selector);
+  assert.equal(selector.value,'backtracking');assert.match(ui.el('mode-label').textContent,/백트래킹/);
+  ui.el('play').click();assert.equal(ui.timers.size,1);
+  ui.tick();assert.match(ui.el('step-number').textContent,/2 \/ /);
+  selector.value='brute_force';selector.dispatchEvent(new ui.w.Event('change'));
+  assert.equal(ui.timers.size,0);
+  assert.match(ui.el('mode-label').textContent,/완전탐색/);assert.match(ui.el('step-number').textContent,/1 \/ /);
+  assert.equal(ui.el('next').disabled,false);ui.el('next').click();assert.match(ui.el('step-number').textContent,/2 \/ /);
+  selector.value='backtracking';selector.dispatchEvent(new ui.w.Event('change'));
+  assert.match(ui.el('mode-label').textContent,/백트래킹/);assert.match(ui.el('step-number').textContent,/1 \/ /);
   ui.dom.window.close();
 });

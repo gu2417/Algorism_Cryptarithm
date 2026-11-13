@@ -18,7 +18,7 @@ def run(problem, algorithm, *, time_limit, solution_limit, trace_limit):
 
     try:
         if algorithm == 'brute_force':
-            brute_force.solve(problem, control=control)
+            brute_force.solve(problem, control=control, emit=record)
         else:
             backtracking.solve(problem, emit=record, control=control)
     except SearchStopped:

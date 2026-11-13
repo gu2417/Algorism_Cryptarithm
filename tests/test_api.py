@@ -19,7 +19,7 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(run['solutions'][0]['mapping'], {'A': 0})
             self.assertEqual(run['solutions'][0]['numeric_expression'], '0 + 0 = 0')
             self.assertGreater(run['statistics']['assignment_attempts'], 0)
-        self.assertEqual(body['runs'][0]['trace'], [])
+        self.assertTrue(body['runs'][0]['trace'])
         self.assertTrue(body['runs'][1]['trace'])
 
     def test_bad_request(self):
@@ -65,8 +65,31 @@ class ApiTests(unittest.TestCase):
         run = response.get_json()['runs'][0]
         self.assertEqual(run['status'], 'solution_limit')
         self.assertEqual(run['solutions_found'], 2)
-        self.assertEqual(run['trace'], [])
+        self.assertTrue(run['trace'])
         self.assertFalse(run['trace_truncated'])
+
+    def test_brute_trace_reflects_actual_complete_checks_and_snapshots(self):
+        run = self.client().post('/api/solve', json={'expression':'A + A = A', 'algorithm':'brute_force'}).get_json()['runs'][0]
+        events = run['trace']
+        self.assertEqual(events[0]['type'], 'start')
+        self.assertEqual(events[-1]['type'], 'finish')
+        self.assertEqual([event['seq'] for event in events], list(range(len(events))))
+        checks = [event for event in events if event['type'] == 'complete_check']
+        self.assertEqual(len(checks), run['statistics']['complete_assignments_checked'])
+        self.assertTrue(any(event['is_solution'] for event in checks))
+        self.assertTrue(any(not event['is_solution'] for event in checks))
+        self.assertTrue(any(event['type'] == 'backtrack' and event['undo'] for event in events))
+        self.assertTrue(all(event['column'] is None for event in events))
+
+    def test_brute_trace_limit_does_not_stop_complete_search(self):
+        run = self.client(TRACE_LIMIT=2).post('/api/solve', json={'expression':'A + A = A', 'algorithm':'brute_force'}).get_json()['runs'][0]
+        self.assertEqual((run['status'], run['solutions_found'], len(run['trace']), run['trace_truncated']), ('complete', 1, 2, True))
+
+    def test_compare_limits_each_trace_independently(self):
+        runs = self.client(TRACE_LIMIT=2).post('/api/solve', json={'expression':'A + A = A', 'algorithm':'compare'}).get_json()['runs']
+        for run in runs:
+            self.assertEqual((run['status'], run['solutions_found'], len(run['trace']), run['trace_truncated']), ('complete', 1, 2, True))
+            self.assertEqual([event['seq'] for event in run['trace']], [0, 1])
 
     def test_no_solution_is_complete(self):
         response = self.client().post('/api/solve', json={
