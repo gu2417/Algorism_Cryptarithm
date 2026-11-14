@@ -5,7 +5,9 @@ from Module.routes import routes
 
 def create_app(config=None):
     app = Flask(__name__)
-    app.config.update(TIME_LIMIT_SECONDS=5.0, SOLUTION_LIMIT=100, TRACE_LIMIT=10000)
+    app.config.update(TIME_LIMIT_SECONDS=5.0, SOLUTION_LIMIT=100, TRACE_LIMIT=80000)
+    from Feature.trace_store import TraceStore
+    app.extensions['trace_store'] = TraceStore()
     if config:
         app.config.update(config)
     app.register_blueprint(routes)
