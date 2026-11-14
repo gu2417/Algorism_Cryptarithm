@@ -31,6 +31,9 @@ footer { color: #505c4d; }
 .trace-context:not([hidden]) { margin: 12px 0 0; color: #505c4d; font-size: 12px; line-height: 1.6; }
 .player-solve,.presentation-toggle { border:1px solid #b8c5af; border-radius:3px; padding:7px 12px; background:#f0f4e8; color:#304a39; font:inherit; font-size:13px; }
 .player-solve { margin-top:10px; }
+.lab .section-title { flex-wrap:wrap; }
+.lab .section-title h2 { word-break:keep-all; }
+.player-solve { flex-shrink:0; white-space:nowrap; }
 .summary-scene:not([hidden]) { padding:9px 12px; margin:8px 0; border-left:3px solid #73934c; background:#eef3df; color:#304a39; font-size:13px; line-height:1.6; }
 .trace-jump:not([hidden]) { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
 .trace-jump input { width:150px; height:32px; font-size:13px; }
@@ -107,3 +110,8 @@ body.presentation .story-mode .story-nav { margin-top:8px; }
 body.presentation .story-mode .digit { height:36px; }
 body.presentation .story-mode .equation-row { min-height:36px; }
 @media(max-width:900px){.lab.story-mode { grid-template-columns:minmax(0,1fr); }}
+/* 좁은 화면에서는 제목·상태·재풀이를 각각 읽을 수 있는 행에 둔다. */
+@media(max-width:480px){
+  .lab .section-title { flex-direction:column; align-items:flex-start; gap:8px; }
+  .lab .player-solve { margin:0; }
+}

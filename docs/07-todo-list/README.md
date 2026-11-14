@@ -65,6 +65,8 @@
 
 ## 최신 검증 근거
 
+`main` 병합 전 재검증과 설치 재현, 모바일 헤더 수정 결과는 [main 릴리스 최종 점검](main-release-verification-2026-11-15.md)을 참고한다.
+
 [최종 종합 QA](final-qa-2026-11-14.md)가 현재 동작·테스트 수·남은 한계의 기준이다. [전체 기록 재생 및 후속 개선 이력](full-trace-verification-2026-11-14.md), [앞선 수정 검증](remediation-verification-2026-11-14.md), [수정 전 제출 검증](submission-readiness-2026-11-14.md), [초기 통합 검증](integration-verification.md)은 단계별 당시 상태를 보존한다. 앞선 수정 검증의 80,000개 전체 보기 제한은 후속 수정으로 해소됐다. T25는 PPT 화면·결과 정리 중, T26은 실제 5분 리허설 및 영상 촬영 전이다.
 
 초기 구현 계획: [Core](core-implementation-plan.md) · [풀이 API](api-implementation-plan.md). 발표 준비: [시연 순서](demo-draft.md).

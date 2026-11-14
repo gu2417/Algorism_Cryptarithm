@@ -37,7 +37,7 @@ Windows에서 Python 3.10 이상과 Git이 필요합니다. PowerShell에서 다
 ```powershell
 git clone https://github.com/gu2417/Algorism_Cryptarithm.git
 cd Algorism_Cryptarithm
-git switch develop
+git switch main
 py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe app.py
@@ -110,6 +110,8 @@ npm.cmd test
 2026-11-14 기준 Python **40개**, UI DOM 통합·회귀 **45개** 테스트가 통과했습니다. 실제 Chromium과 Flask 서버를 연결해 다섯 예제 × 세 모드의 **15개 풀이 흐름**, 발표 장면 **136개**, 단계별 요약 **356개**를 대조했습니다. 전체 기록 경계·끝까지 이동, 예제 전환, 독립 재생, 기록 만료·재시도와 1280×720 발표 화면·375×812 모바일 배치를 확인했습니다.
 
 자세한 재현 조건·수정 전후 화면·원자료와 검증 한계는 [최종 종합 QA](docs/07-todo-list/final-qa-2026-11-14.md)에 있습니다. 다른 브라우저·실제 휴대기기·스크린리더·장시간 동시 부하·새 PC의 깨끗한 설치는 해당 검증에 포함하지 않았습니다.
+
+`main` 병합 전에는 같은 PC의 별도 폴더에 Git 추적 파일만 추출하고 새 가상환경과 `npm ci`로 설치를 재현했습니다. 이 재검증의 결과와 실제 브라우저 검사 근거는 [main 릴리스 최종 점검](docs/07-todo-list/main-release-verification-2026-11-15.md)에 기록합니다. 개발 중인 변경을 확인하려면 `develop` 브랜치를 사용하세요.
 
 후속 작업은 최종 PPT·영상 제작, 발표 PC와 프로젝터 확인, 실제 5분 리허설입니다. [작업 목록](docs/07-todo-list/README.md)과 [시연 순서](docs/07-todo-list/demo-draft.md)를 참고하세요.
 
