@@ -1,0 +1,263 @@
+{
+  "status": "passed",
+  "cases": [
+    {
+      "expression": "I + BB = ILL",
+      "algorithm": "backtracking",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 10,
+          "summary": 25,
+          "total": 879,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "I + BB = ILL",
+      "algorithm": "brute_force",
+      "runs": [
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 16,
+          "total": 2723,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "I + BB = ILL",
+      "algorithm": "compare",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 10,
+          "summary": 25,
+          "total": 879,
+          "maxBottom": 699
+        },
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 16,
+          "total": 2723,
+          "maxBottom": 699
+        }
+      ]
+    },
+    {
+      "expression": "SEND + MORE = MONEY",
+      "algorithm": "backtracking",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 10,
+          "summary": 38,
+          "total": 74211,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "SEND + MORE = MONEY",
+      "algorithm": "brute_force",
+      "runs": [
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 26,
+          "total": 7748195,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "SEND + MORE = MONEY",
+      "algorithm": "compare",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 10,
+          "summary": 38,
+          "total": 74211,
+          "maxBottom": 699
+        },
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 26,
+          "total": 7748195,
+          "maxBottom": 699
+        }
+      ]
+    },
+    {
+      "expression": "A + A = A",
+      "algorithm": "backtracking",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 7,
+          "total": 71,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + A = A",
+      "algorithm": "brute_force",
+      "runs": [
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 4,
+          "summary": 6,
+          "total": 43,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + A = A",
+      "algorithm": "compare",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 7,
+          "total": 71,
+          "maxBottom": 699
+        },
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 4,
+          "summary": 6,
+          "total": 43,
+          "maxBottom": 699
+        }
+      ]
+    },
+    {
+      "expression": "A + B = C",
+      "algorithm": "backtracking",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 8,
+          "summary": 20,
+          "total": 804,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + B = C",
+      "algorithm": "brute_force",
+      "runs": [
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 14,
+          "total": 3214,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + B = C",
+      "algorithm": "compare",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 8,
+          "summary": 20,
+          "total": 804,
+          "maxBottom": 699
+        },
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 7,
+          "summary": 14,
+          "total": 3214,
+          "maxBottom": 699
+        }
+      ]
+    },
+    {
+      "expression": "A + B = AA",
+      "algorithm": "backtracking",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 16,
+          "total": 644,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + B = AA",
+      "algorithm": "brute_force",
+      "runs": [
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 10,
+          "total": 355,
+          "maxBottom": 443
+        }
+      ]
+    },
+    {
+      "expression": "A + B = AA",
+      "algorithm": "compare",
+      "runs": [
+        {
+          "algorithm": "backtracking",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 16,
+          "total": 644,
+          "maxBottom": 699
+        },
+        {
+          "algorithm": "brute_force",
+          "status": "complete",
+          "scenes": 5,
+          "summary": 10,
+          "total": 355,
+          "maxBottom": 699
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "자동 재생 끝까지·정지·다시 시작·상대 패널 유지",
+    "빈 입력·연산자·숫자·문자 수·길이 제한",
+    "소문자·공백 정규화"
+  ],
+  "failures": [],
+  "current": "done",
+  "activeTimers": 0
+}

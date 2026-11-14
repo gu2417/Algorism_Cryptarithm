@@ -7,6 +7,12 @@
 #result-caption { overflow-wrap: anywhere; min-width: 0; }
 .lab-main { min-width: 0; }
 @media (max-width: 800px) { .lab { grid-template-columns: minmax(0, 1fr); } }
+.comparison-stage.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.comparison-stage.compare .lab { grid-template-columns: minmax(0, 1fr); }
+.comparison-stage.compare .lab-side { border-left: 0; border-top: 1px solid #e7e9df; }
+.comparison-stage.compare .playback { flex-wrap: wrap; }
+.playback-outcome:not([hidden]) { display: flex; flex-direction: column; gap: 6px; margin-top: 18px; padding: 14px; background: #e8efdc; color: #304a39; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 900px) { .comparison-stage.compare { grid-template-columns: minmax(0, 1fr); } }
 
 /* 정보성 보조 문구는 각 배경에서 충분한 명도 대비를 유지한다. */
 :root { --muted: #505c4d; }
@@ -23,3 +29,81 @@ footer { color: #505c4d; }
 .trace-choice:not([hidden]) { display: flex; align-items: center; gap: 12px; margin-top: 18px; color: #505c4d; font-size: 12px; }
 .trace-choice select { width: auto; height: 36px; }
 .trace-context:not([hidden]) { margin: 12px 0 0; color: #505c4d; font-size: 12px; line-height: 1.6; }
+.player-solve,.presentation-toggle { border:1px solid #b8c5af; border-radius:3px; padding:7px 12px; background:#f0f4e8; color:#304a39; font:inherit; font-size:13px; }
+.player-solve { margin-top:10px; }
+.summary-scene:not([hidden]) { padding:9px 12px; margin:8px 0; border-left:3px solid #73934c; background:#eef3df; color:#304a39; font-size:13px; line-height:1.6; }
+.trace-jump:not([hidden]) { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.trace-jump input { width:150px; height:32px; font-size:13px; }
+.trace-jump button { border:1px solid #b8c5af; background:#f0f4e8; color:#304a39; border-radius:3px; padding:5px 8px; }
+.presentation-toggle { position:absolute; right:24px; top:78px; z-index:2; }
+body.presentation .topbar,body.presentation .intro,body.presentation .workspace,body.presentation footer { display:none; }
+body.presentation { padding-top:40px; overflow-anchor:none; }
+body.presentation .presentation-toggle { position:fixed; top:6px; right:20px; display:block; margin:0; }
+body.presentation .shell { max-width:1800px; padding:0 16px; }
+body.presentation .lab { margin-top:0; min-height:0; }
+body.presentation .lab-main,body.presentation .lab-side { padding:12px 16px; }
+body.presentation .eyebrow,body.presentation .legend { display:none; }
+body.presentation .section-title h2 { font-size:22px; }
+body.presentation .player-solve { margin:0; padding:5px 8px; font-size:12px; }
+body.presentation .live-label { display:none; }
+body.presentation .trace-choice:not([hidden]),body.presentation .trace-context:not([hidden]) { margin-top:6px; }
+body.presentation .trace-choice select { height:30px; }
+body.presentation [id$="trace-context"] { display:none; }
+body.presentation [id$="trace-summary-info"] { display:none; }
+body.presentation .calculation { min-height:0; margin:10px 0; padding:10px 14px; }
+body.presentation .carry { margin-top:6px; }
+body.presentation .equation-row { min-height:40px; }
+body.presentation .digit { height:40px; }
+body.presentation .assignment { margin-top:6px; }
+body.presentation .playback-outcome:not([hidden]) { margin-top:8px; padding:8px; gap:2px; }
+body.presentation .lab-side { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+body.presentation .lab-side h3 { font-size:17px; }
+body.presentation .event-description { font-size:15px; margin:8px 0; }
+body.presentation .event-detail { min-height:0; margin:0; }
+body.presentation .trace-block { margin:0; }
+body.presentation .trace-heading { padding-bottom:6px; }
+body.presentation .trace-list { min-height:0; padding:4px 0; }
+body.presentation .trace-list li:not(.selected) { display:none; }
+body.presentation .results { margin-top:12px; padding:16px; }
+/* 발표용 요약: 하나의 계산판과 하나의 설명 장면을 함께 보여 준다. */
+.lab.story-mode { grid-template-columns:minmax(0,1.2fr) minmax(320px,1fr); }
+.story-mode .lab-side { justify-content:flex-start; background:#f1f4e9; }
+.story-mode .lab-side > :not(.story-card) { display:none; }
+.story-mode [id$="trace-context"],.story-mode [id$="trace-summary-info"] { display:none; }
+.story-mode .playback-outcome { display:none!important; }
+.story-nav:not([hidden]) { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 4px; }
+.story-nav button { width:30px; height:30px; border:1px solid #cbd5bc; background:transparent; color:#53664c; border-radius:50%; font:11px 'DM Mono',monospace; }
+.story-nav button.active { background:#3f5e49; color:white; border-color:#3f5e49; }
+.story-card:not([hidden]) { display:flex; flex-direction:column; gap:12px; }
+.story-phase { margin:0; color:#587248; font:12px 'DM Mono',monospace; letter-spacing:.08em; }
+.lab-side .story-title { margin:0; font-size:28px; line-height:1.35; letter-spacing:-.04em; text-wrap:balance; }
+.story-narration { margin:0; font-size:16px; line-height:1.8; color:#3f4e39; }
+.story-formula:not([hidden]) { padding:14px 0; font:500 27px 'DM Mono',monospace; color:#304a39; line-height:1.4; overflow-wrap:anywhere; }
+.story-detail { margin:0; font-size:14px; font-weight:600; color:#3f5e49; }
+.story-detail:empty { display:none; }
+.story-explanation { margin:6px 0 0; padding-top:16px; border-top:1px solid #ced8c1; font-size:13px; line-height:1.8; color:#53664c; }
+.story-explanation strong { display:block; margin-bottom:4px; font-size:11px; letter-spacing:.06em; }
+.story-toolbar:not([hidden]) { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:14px 0 4px; }
+.story-toolbar .story-nav:not([hidden]) { flex:1; margin:0; }
+.story-auto { flex-shrink:0; padding:8px 12px; border:1px solid #3f5e49; background:#3f5e49; color:#fff; border-radius:4px; font-size:13px; }
+.story-auto[aria-pressed="true"] { background:#eef3df; color:#304a39; }
+.story-mode .controls [id$="play"] { display:none; }
+.story-card[data-phase="제외"] .story-formula { color:#97482f; }
+.story-card[data-phase="중단"] .story-phase { color:#97482f; }
+.story-mode .digit strong { font-size:30px; }
+.story-mode .controls { flex-wrap:wrap; }
+.story-mode .controls button { width:auto; min-width:35px; padding:0 9px; font-size:12px; }
+body.presentation .results { display:none; }
+body.presentation .story-mode .lab-side { display:block; }
+body.presentation .story-mode .story-card { gap:6px; }
+body.presentation .story-mode .story-title { font-size:24px; }
+body.presentation .story-mode .story-narration { font-size:15px; line-height:1.6; }
+body.presentation .story-mode .story-formula { padding:5px 0; font-size:25px; }
+body.presentation .story-mode .story-explanation { padding-top:8px; margin-top:0; font-size:12px; line-height:1.5; }
+body.presentation .story-mode .calculation { padding-top:6px; padding-bottom:6px; }
+body.presentation .story-mode .story-toolbar { margin-top:8px; }
+body.presentation .story-mode .story-toolbar .story-nav { margin:0; }
+body.presentation .story-mode .story-nav { margin-top:8px; }
+body.presentation .story-mode .digit { height:36px; }
+body.presentation .story-mode .equation-row { min-height:36px; }
+@media(max-width:900px){.lab.story-mode { grid-template-columns:minmax(0,1fr); }}
