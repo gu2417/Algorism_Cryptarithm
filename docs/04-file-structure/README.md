@@ -6,6 +6,8 @@
 app.py                         Flask 생성·설정·로컬 실행
 requirements.txt               Python 의존성
 package.json / package-lock.json UI 테스트 의존성
+VERSION                        현재 개발 버전
+CHANGELOG.md                   버전별 기능 변경 이력
 Core/
   model.py                     문제 모델
   constraints.py               배정 및 전체 정답 검증
