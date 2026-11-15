@@ -1,8 +1,8 @@
 import unittest
 from app import create_app
-from Module.validation import parse_expression
-from Feature.solve import run
-from Feature.trace_archive import TraceArchive
+from src.Module.validation import parse_expression
+from src.Feature.solve import run
+from src.Feature.trace_archive import TraceArchive
 
 
 class ArchiveTests(unittest.TestCase):

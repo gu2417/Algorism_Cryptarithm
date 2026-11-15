@@ -1,4 +1,4 @@
-from Core.model import Problem
+from src.Core.model import Problem
 
 
 def solve(problem: Problem, control=None, emit=None) -> list[dict[str, int]]:

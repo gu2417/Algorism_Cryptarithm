@@ -128,8 +128,8 @@ class ApiTests(unittest.TestCase):
         self.assertTrue(any(event['type'] == 'solution' for event in run['summary_trace']))
         self.assertEqual(run['status'], 'complete')
         self.assertEqual(run['statistics']['complete_assignments_checked'], 1451520)
-        from Feature.trace_archive import TraceArchive
-        from Module.validation import parse_expression
+        from src.Feature.trace_archive import TraceArchive
+        from src.Module.validation import parse_expression
         archive = TraceArchive(parse_expression('SEND + MORE = MONEY'),run)
         self.assertEqual(archive.total,7748195)
         self.assertEqual(archive.page(80000,1)[0]['seq'],80000)

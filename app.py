@@ -1,12 +1,12 @@
 from flask import Flask, jsonify, render_template
 from werkzeug.exceptions import HTTPException
-from Module.routes import routes
+from src.Module.routes import routes
 
 
 def create_app(config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='src/templates', static_folder='src/static')
     app.config.update(TIME_LIMIT_SECONDS=5.0, SOLUTION_LIMIT=100, TRACE_LIMIT=80000)
-    from Feature.trace_store import TraceStore
+    from src.Feature.trace_store import TraceStore
     app.extensions['trace_store'] = TraceStore()
     if config:
         app.config.update(config)

@@ -1,8 +1,8 @@
 from flask import Blueprint, current_app, jsonify, request
 
-from Feature.solve import run
-from Feature.trace_archive import TraceArchive
-from Module.validation import InputError, parse_expression
+from src.Feature.solve import run
+from src.Feature.trace_archive import TraceArchive
+from src.Module.validation import InputError, parse_expression
 
 routes = Blueprint('routes', __name__)
 

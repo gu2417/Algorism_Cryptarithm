@@ -1,7 +1,7 @@
 """서로 다른 후보의 계산을 붙이지 않고 실제 정답 경로를 요약한다."""
 from collections import deque
-from Core import backtracking
-from Feature.trace_archive import TraceArchive
+from src.Core import backtracking
+from src.Feature.trace_archive import TraceArchive
 
 
 def causal(events):

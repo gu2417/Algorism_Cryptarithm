@@ -1,7 +1,7 @@
 ﻿import unittest
 from app import create_app
-from Core.constraints import is_solution
-from Module.validation import parse_expression
+from src.Core.constraints import is_solution
+from src.Module.validation import parse_expression
 
 
 class IntegrationTests(unittest.TestCase):

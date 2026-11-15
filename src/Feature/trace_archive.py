@@ -1,6 +1,6 @@
 """실제 실행 순서를 페이지 단위로 복원한다. 실행이 도달한 seq 밖은 노출하지 않는다."""
 from functools import lru_cache
-from Core import backtracking
+from src.Core import backtracking
 
 
 class TraceArchive:

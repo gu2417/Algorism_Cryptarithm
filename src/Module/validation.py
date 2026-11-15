@@ -1,6 +1,6 @@
-﻿import re
+import re
 
-from Core.model import Problem
+from src.Core.model import Problem
 
 
 class InputError(ValueError):

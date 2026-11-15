@@ -11,8 +11,8 @@ function response(expression,config={}){
   const result=spawnSync(python,['-c',source],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);return JSON.parse(result.stdout);
 }
 async function finish(data,view='story'){
-  const dom=new JSDOM(fs.readFileSync('templates/index.html','utf8'),{runScripts:'outside-only',url:'http://localhost'}),w=dom.window;
-  w.fetch=async()=>({ok:true,json:async()=>data});w.eval(fs.readFileSync('static/js/app.js','utf8'));
+  const dom=new JSDOM(fs.readFileSync('src/templates/index.html','utf8'),{runScripts:'outside-only',url:'http://localhost'}),w=dom.window;
+  w.fetch=async()=>({ok:true,json:async()=>data});w.eval(fs.readFileSync('src/static/js/app.js','utf8'));
   const el=id=>w.document.getElementById(id);el('expression').value=data.normalized_expression;el('solve-form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(setImmediate);
   el('trace-view').value=view;el('trace-view').dispatchEvent(new w.Event('change'));let count=0;while(!el('next').disabled&&count++<150)el('next').click();assert.ok(count<150);return {dom,el};
 }

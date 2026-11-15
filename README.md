@@ -119,10 +119,10 @@ npm.cmd test
 
 | 경로 | 역할 |
 |---|---|
-| `Core/` | 수식 모델, 제약 조건과 탐색 알고리즘 |
-| `Feature/` | 풀이 실행, 탐색 기록 및 제한 관리 |
-| `Module/` | 입력 검증과 Flask API |
-| `templates/`, `static/` | 웹 화면과 스타일, 재생 기능 |
+| `src/Core/` | 수식 모델, 제약 조건과 탐색 알고리즘 |
+| `src/Feature/` | 풀이 실행, 탐색 기록 및 제한 관리 |
+| `src/Module/` | 입력 검증과 Flask API |
+| `src/templates/`, `src/static/` | 웹 화면과 스타일, 재생 기능 |
 | `tests/` | Python 및 UI 테스트 |
 | `docs/` | 요구사항, 설계, 검증과 작업 계획 |
 

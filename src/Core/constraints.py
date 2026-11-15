@@ -1,4 +1,4 @@
-﻿from Core.model import Problem
+from src.Core.model import Problem
 
 
 def is_solution(problem: Problem, assignment: dict[str, int]) -> bool:

@@ -1,9 +1,9 @@
 import unittest
 
-from Module.validation import InputError, parse_expression
-from Core.constraints import is_solution
-from Core.brute_force import solve as brute_force
-from Core.backtracking import solve as backtracking
+from src.Module.validation import InputError, parse_expression
+from src.Core.constraints import is_solution
+from src.Core.brute_force import solve as brute_force
+from src.Core.backtracking import solve as backtracking
 
 
 class InputTests(unittest.TestCase):

@@ -12,12 +12,12 @@ function response(expression = 'A + B = C', algorithm = 'backtracking', config =
   return JSON.parse(result.stdout);
 }
 function setup(data, fillDefault = true, fullView = true) {
-  const dom = new JSDOM(fs.readFileSync('templates/index.html','utf8'), {runScripts:'outside-only', url:'http://localhost/'});
+  const dom = new JSDOM(fs.readFileSync('src/templates/index.html','utf8'), {runScripts:'outside-only', url:'http://localhost/'});
   const w = dom.window, timers = new Map(); let nextTimer = 0, calls = 0;
   w.setInterval = callback => {timers.set(++nextTimer, callback); return nextTimer;};
   w.clearInterval = id => timers.delete(id);
   w.fetch = async () => {calls++; return {ok:true,json:async()=>data};};
-  w.eval(fs.readFileSync('static/js/app.js','utf8'));
+  w.eval(fs.readFileSync('src/static/js/app.js','utf8'));
   const el = id => w.document.getElementById(id);
   if (fillDefault) el('expression').value = 'I + BB = ILL';
   // Existing tests explicitly exercise detailed summary/full modes; story tests keep the new default.
@@ -328,7 +328,7 @@ test('controls are restored after a failed request',async()=>{
 
 test('trace text and selected step maintain readable contrast',async()=>{
   const ui=setup(data);
-  const style=ui.w.document.createElement('style');style.textContent=fs.readFileSync('static/css/style.css','utf8');ui.w.document.head.append(style);
+  const style=ui.w.document.createElement('style');style.textContent=fs.readFileSync('src/static/css/style.css','utf8');ui.w.document.head.append(style);
   await ui.submit();
   const rgb=value=>{const values=value.match(/[\d.]+/g);assert.ok(values,`Invalid color: ${value}`);return values.slice(0,3).map(Number);};
   const luminance=color=>{const channels=color.map(n=>{const c=n/255;return c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4;});return .2126*channels[0]+.7152*channels[1]+.0722*channels[2];};

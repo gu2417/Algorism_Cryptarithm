@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
-from Core.constraints import is_solution
-from Core.model import Problem
+from src.Core.constraints import is_solution
+from src.Core.model import Problem
 
 
 def solve(problem: Problem, emit: Callable[[dict], None] | None = None, control=None) -> list[dict[str, int]]:

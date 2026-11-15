@@ -1,11 +1,11 @@
-﻿import time
+import time
 
 from collections import Counter, deque
 
-from Core import backtracking, brute_force
-from Feature.control import SearchControl, SearchStopped
-from Feature.summary import build_summary
-from Feature.presentation import build_presentation
+from src.Core import backtracking, brute_force
+from src.Feature.control import SearchControl, SearchStopped
+from src.Feature.summary import build_summary
+from src.Feature.presentation import build_presentation
 
 
 def run(problem, algorithm, *, time_limit, solution_limit, trace_limit):
