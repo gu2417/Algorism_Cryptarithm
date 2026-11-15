@@ -1,0 +1,1 @@
+{"status":"passed","checks":[{"panel":"player-backtracking","view":"story","viewport":375,"width":375},{"panel":"player-backtracking","view":"summary","viewport":375,"width":375},{"panel":"player-brute","view":"story","viewport":375,"width":375},{"panel":"player-brute","view":"summary","viewport":375,"width":375}],"failures":[]}
