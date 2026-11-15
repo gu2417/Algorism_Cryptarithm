@@ -1,6 +1,6 @@
 # 07. Todo List
 
-현재 버전의 기능·복구·화면 검증 결과는 [최종 종합 QA](final-qa-2026-11-14.md)를 참고한다. 이전 검증 문서는 각 수정 단계의 이력으로 보존한다.
+현재 버전의 기능·복구·화면·설치 재검증 결과는 [main 릴리스 최종 점검](main-release-verification-2026-11-15.md)을 참고한다. 이전 검증 문서는 각 수정 단계의 이력으로 보존한다.
 
 > 상태: 완료 / 진행 중 / 미착수. Core·API·UI와 수정 후 검증은 구현 단계이며, 최종 발표자료·영상은 별도 작업이다. 개발 담당은 구윤찬, 발표자료 및 영상 담당은 송준영이다. P0은 필수, P1은 후속 우선순위다.
 
@@ -67,6 +67,6 @@
 
 `main` 병합 전 재검증과 설치 재현, 모바일 헤더 수정 결과는 [main 릴리스 최종 점검](main-release-verification-2026-11-15.md)을 참고한다.
 
-[최종 종합 QA](final-qa-2026-11-14.md)가 현재 동작·테스트 수·남은 한계의 기준이다. [전체 기록 재생 및 후속 개선 이력](full-trace-verification-2026-11-14.md), [앞선 수정 검증](remediation-verification-2026-11-14.md), [수정 전 제출 검증](submission-readiness-2026-11-14.md), [초기 통합 검증](integration-verification.md)은 단계별 당시 상태를 보존한다. 앞선 수정 검증의 80,000개 전체 보기 제한은 후속 수정으로 해소됐다. T25는 PPT 화면·결과 정리 중, T26은 실제 5분 리허설 및 영상 촬영 전이다.
+[최종 종합 QA](final-qa-2026-11-14.md)는 11월 14일 검사와 수정 근거를 보존하며, 이후 재검증·모바일 수정·설치 확인은 위의 11월 15일 릴리스 점검이 기준이다. [전체 기록 재생 및 후속 개선 이력](full-trace-verification-2026-11-14.md), [앞선 수정 검증](remediation-verification-2026-11-14.md), [수정 전 제출 검증](submission-readiness-2026-11-14.md), [초기 통합 검증](integration-verification.md)은 단계별 당시 상태를 보존한다. 앞선 수정 검증의 80,000개 전체 보기 제한은 후속 수정으로 해소됐다. T25는 PPT 화면·결과 정리 중, T26은 실제 5분 리허설 및 영상 촬영 전이다.
 
 초기 구현 계획: [Core](core-implementation-plan.md) · [풀이 API](api-implementation-plan.md). 발표 준비: [시연 순서](demo-draft.md).
